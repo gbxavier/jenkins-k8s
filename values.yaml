@@ -1,0 +1,28 @@
+controller:
+  installPlugins:
+    - job-dsl:1.78.3
+    - kubernetes:1.31.3
+    - workflow-aggregator:2.6
+    - git:4.10.2
+    - configuration-as-code:1.55.1
+  JCasC:
+    configScripts:
+      01-example-pipeline: |
+        jobs:
+          - script: |
+              multibranchPipelineJob('configuration-as-code') {
+                  branchSources {
+                      git {
+                          id = 'hello-world'
+                          remote('https://github.com/jenkinsci/pipeline-examples.git')
+                      }
+                  }
+                  orphanedItemStrategy {
+                    discardOldItems {
+                      numToKeep(10)
+                    }
+                  }
+                  triggers {
+                    periodic(5)
+                  }
+              }
